@@ -5,43 +5,11 @@ else
     echo "BIOS boot mode detected"
 fi
 
-# Verify the CPU architecture
-if [ $(uname -m) = "x86_64" ]; then
-    echo "64-bit CPU architecture detected"
-else
-    echo "32-bit CPU architecture detected"
-fi
+# ping google.com
+ping -c 3 google.com
 
-# Verify the CPU vendor
-if [ $(grep vendor_id /proc/cpuinfo | uniq | cut -d: -f2 | tr -d ' ') = "GenuineIntel" ]; then
-    echo "Intel CPU vendor detected"
-else
-    echo "AMD CPU vendor detected"
-fi
-
-# Verify the CPU microarchitecture
-if [ $(grep "model name" /proc/cpuinfo | uniq | cut -d: -f2 | tr -d ' ' | cut -d- -f1) = "Intel(R)Core(TM)i7-6700HQCPU@" ]; then
-    echo "Intel Skylake CPU microarchitecture detected"
-else
-    echo "AMD Zen CPU microarchitecture detected"
-fi
-
-# Verify the CPU virtualization support
-if [ $(grep "vmx" /proc/cpuinfo | wc -l) -gt 0 ]; then
-    echo "Intel VT-x CPU virtualization support detected"
-else
-    echo "AMD SVM CPU virtualization support detected"
-fi
-
-# Verify the CPU AES-NI support
-if [ $(grep "aes" /proc/cpuinfo | wc -l) -gt 0 ]; then
-    echo "Intel AES-NI CPU support detected"
-else
-    echo "AMD AES-NI CPU support detected"
-fi
-
-#Connect to the internet
-ping -c 3 www.google.com
+# Update the system clock
+timedatectl set-ntp true
 
 #Verify the network interface
 ip link
@@ -70,7 +38,7 @@ mount /dev/sda1 /mnt/boot
 
 # install the base packages
 echo "installing the base packages"
-pacstrap /mnt base base-devel
+pacstrap /mnt base base-devel linux linux-firmware vim
 
 # generate the fstab file
 echo "generating the fstab file"
